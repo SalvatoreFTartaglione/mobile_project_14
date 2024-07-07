@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../screens/trip_detail_screen.dart';
 
 class Statistiche extends StatelessWidget {
   const Statistiche({super.key});
@@ -72,7 +73,17 @@ class Statistiche extends StatelessWidget {
                     ),
                     subtitle: Text('Visite: $count'),
                     trailing: const Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TripDetailScreen(destinazione: destinazione),
+                        ),
+                      );
+                    },
+
                   ),
+                  
                 );
               },
             ),

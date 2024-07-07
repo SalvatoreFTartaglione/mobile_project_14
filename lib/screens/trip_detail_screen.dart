@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../database/database_helper.dart';
 import '../../database/viaggio.dart';
-//import '../../aggiungiviaggio.dart';
 import 'package:intl/intl.dart';
 
 class TripDetailScreen extends StatefulWidget {
-  const TripDetailScreen({super.key});
+  final String? destinazione;
+
+  const TripDetailScreen({Key? key, this.destinazione}) : super(key: key);
 
   @override
   _TripDetailScreenState createState() => _TripDetailScreenState();
@@ -17,39 +18,32 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
   @override
   void initState() {
     super.initState();
-    //_loadViaggi();
+    if (widget.destinazione != null) {
+      _loadViaggi();
+    }
   }
 
-
-
-  /*Future<void> _loadViaggi() async {
+  Future<void> _loadViaggi() async {
     try {
       final db = DatabaseHelper.instance;
-      //final ViaggiMaps = await db.getDestinationWithTripCount();
-
+      final viaggiList = await db.getViaggiByDestinazione(widget.destinazione!);
       setState(() {
-        //destinations = destinationMaps.map((map) {
-        return viaggio(
-          id_destinazione: map['id_destinazione'] as int,
-          nome: map['nome'] as String,
-          tripCount: map['trip_count'] as int,
-        );
-      }).toList();
-
+        _viaggi = viaggiList;
+      });
     } catch (e) {
-      print('Error loading destinations: $e');
+      print('Error loading viaggi: $e');
     }
-  }*/
+  }
 
-  /*Future<void> _refreshViaggi() async {
+  Future<void> _refreshViaggi() async {
     await _loadViaggi();
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Viaggi'),
+        title: Text('Viaggi - ${widget.destinazione ?? 'Tutte le destinazioni'}'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -68,7 +62,7 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
                   icon: const Icon(Icons.delete),
                   onPressed: () async {
                     await DatabaseHelper.instance.deleteViaggio(viaggio.id_viaggio);
-                    //_refreshViaggi();
+                    _refreshViaggi();
                   },
                 ),
               ),
@@ -76,144 +70,6 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
           },
         ),
       ),
-      /*floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AggiungiViaggio()),
-          );
-          _refreshViaggi(); // Ricarica la lista dei viaggi dopo l'aggiunta di un nuovo viaggio
-        },
-        child: const Icon(Icons.add),
-      ),*/
     );
   }
 }
-
-
-
-/*child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Viaggi Pianificati',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            SizedBox(
-              height: 250, // Altezza delle card
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal, // Scrolling orizzontale
-                itemCount: _viaggi.length,
-                itemBuilder: (context, index) {
-                  final viaggioItem = _viaggi[index];
-                  return GestureDetector(
-                    onTap: () {
-                      // Implementa la logica per modificare il viaggio
-                    },
-                    child: Container(
-                      width: 200, // Larghezza delle card
-                      margin: const EdgeInsets.only(right: 10),
-                      child: Card(
-                        color: const Color(0xffdcdcf7),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ClipRRect(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10),
-                              ),
-                              child: Image.asset(
-                                'assets/images/viaggio${index + 1}.png',
-                                height: 150,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                viaggioItem.titolo,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                              child: Text(
-                                viaggioItem.itinerario,
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              'Viaggi Effettuati',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: ListView.builder(
-                scrollDirection: Axis.vertical, // Scrolling verticale
-                itemCount: _viaggi.length,
-                itemBuilder: (context, index) {
-                  final viaggioItem = _viaggi[index];
-                  return GestureDetector(
-                    onTap: () {
-                      // Implementa la logica per modificare il viaggio
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      child: Card(
-                        color: const Color(0xffdcdcf7),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ClipRRect(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10),
-                              ),
-                              child: Image.asset(
-                                'assets/images/viaggio${index + 1}.png',
-                                height: 120,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                viaggioItem.titolo,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                              child: Text(
-                                viaggioItem.itinerario,
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),*/

@@ -19,6 +19,18 @@ class viaggio {
     required this.destinazione,
   });
 
+  factory viaggio.fromMap(Map<String, dynamic> map) {
+    return viaggio(
+      id_viaggio: map['id_viaggio'],
+      titolo: map['titolo'],
+      itinerario: map['itinerario'],
+      data_inizio: DateTime.parse(map['data_inizio']),
+      data_fine: DateTime.parse(map['data_fine']),
+      note: map['note'],
+      destinazione: map['destinazione'],
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'id_viaggio': id_viaggio,

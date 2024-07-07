@@ -201,4 +201,18 @@ class DatabaseHelper {
     );
   }
 
+Future<List<viaggio>> getViaggiByDestinazione(String destinazione) async {
+  final db = await instance.database;
+  final maps = await db.query(
+    'viaggi',
+    where: 'destinazione = ?',
+    whereArgs: [destinazione],
+  );
+
+  return List.generate(maps.length, (i) {
+    return viaggio.fromMap(maps[i]);
+  });
+}
+
+
 }
