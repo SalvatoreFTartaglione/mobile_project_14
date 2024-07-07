@@ -13,7 +13,7 @@ class TripEditScreen extends StatefulWidget {
   _TripEditScreenState createState() => _TripEditScreenState();
 }
 
-class _TripEditScreenState extends State<TripEditScreen> {
+class _TripEditScreenState extends State<TripEditScreen> { 
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _titleController;
   late TextEditingController _destinationController;
@@ -47,7 +47,7 @@ class _TripEditScreenState extends State<TripEditScreen> {
       initialDate: _date ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
-    );
+  );
     if (picked != null) {
       setState(() {
         _date = picked;

@@ -4,6 +4,7 @@ import '../../screens/dashboard.dart';
 import '../../screens/trip_detail_screen.dart';
 import '../../screens/destination_screen.dart';
 import '../../screens/search_screen.dart';
+import '../../screens/stats_screen.dart'; // Importa la schermata delle statistiche
 
 void main() {
   runApp(const MyApp());
@@ -71,10 +72,9 @@ class _HomeScreenState extends State<HomeScreen> {
           TripEditScreen(),
           DestinationScreen(),
           SearchScreen(),
+          Statistiche(), // Aggiungi la schermata delle statistiche
         ],
-
       ),
-
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.orange,
         selectedItemColor: Colors.orange,
@@ -87,12 +87,9 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Aggiungi/Modifica viaggio'),
           BottomNavigationBarItem(icon: Icon(Icons.location_on), label: 'Destinazioni'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Ricerca'),
-          BottomNavigationBarItem(icon: Icon(Icons.query_stats), label: 'Statistiche'),
-
+          BottomNavigationBarItem(icon: Icon(Icons.query_stats), label: 'Statistiche'), // Aggiungi l'elemento per le statistiche
         ],
       ),
     );
   }
 }
-
-

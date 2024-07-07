@@ -97,22 +97,20 @@ class Dashboard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            /* mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              /*ElevatedButton(
+              ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const AggiungiViaggio()), // Naviga alla schermata delle statistiche
+                    MaterialPageRoute(
+                      builder: (context) => TripEditScreen(trip: null), // Passa null se è un nuovo viaggio
+                    ),
                   );
                 },
                 child: const Text('Aggiungi Viaggio'),
-              ),*/
-              ElevatedButton(
-                onPressed: () {},
-                child: const Text('Crea Categoria'),
               ),
-            ],
+            ], */
           ),
         ],
       ),
