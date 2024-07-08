@@ -126,7 +126,7 @@ class Dashboard extends StatelessWidget {
                       ),
                       child: Center(
                         child: Icon(
-                          Icons.mode_of_travel_sharp,   //oppure Icons.travel_explore,  
+                          Icons.travel_explore, 
                           color: Colors.white,
                           size: 36.0,                   // Dimensione button
                         ),
