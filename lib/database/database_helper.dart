@@ -1,4 +1,4 @@
-import 'package:path/path.dart';
+ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import '../../database/viaggio.dart';
 import 'categoria.dart';
@@ -26,18 +26,20 @@ class DatabaseHelper {
   Future<void> _createTables(Database db, int version) async {
     await db.execute('''
       CREATE TABLE viaggio(
-        id_viaggio INTEGER PRIMARY KEY, 
+        id_viaggio SERIAL PRIMARY KEY, 
         titolo VARCHAR(30) NOT NULL, 
-        itinerario TEXT, 
+        itinerario TEXT NOT NULL, 
         data_inizio DATE NOT NULL, 
         data_fine DATE NOT NULL, 
-        destinazione INTEGER NOT NULL
+        destinazione INTEGER NOT NULL,
+        note TEXT NOT NULL,
+        FOREIGN KEY(destinazione) REFERENCES destinazione(id_destinazione)
       );
     ''');
 
     await db.execute('''
       CREATE TABLE foto(
-        id_foto INTEGER PRIMARY KEY, 
+        id_foto SERIAL PRIMARY KEY, 
         viaggio INTEGER NOT NULL, 
         FOREIGN KEY(viaggio) REFERENCES viaggio(id_viaggio)
       );
@@ -45,7 +47,7 @@ class DatabaseHelper {
 
     await db.execute('''
       CREATE TABLE destinazione(
-        id_destinazione INTEGER PRIMARY KEY, 
+        id_destinazione SERIAL PRIMARY KEY, 
         nome VARCHAR(20) UNIQUE NOT NULL,
         tripCount INTEGER NOT NULL DEFAULT 0
       );
@@ -53,7 +55,7 @@ class DatabaseHelper {
 
     await db.execute('''
       CREATE TABLE recensione(
-        id_recensione INTEGER PRIMARY KEY, 
+        id_recensione SERIAL PRIMARY KEY, 
         testo TEXT NOT NULL, 
         viaggio INTEGER NOT NULL, 
         FOREIGN KEY(viaggio) REFERENCES viaggio(id_viaggio)
@@ -62,7 +64,7 @@ class DatabaseHelper {
 
     await db.execute('''
       CREATE TABLE categoria(
-        id_categoria INTEGER PRIMARY KEY, 
+        id_categoria SERIAL PRIMARY KEY, 
         nome VARCHAR(20) NOT NULL
       );
     ''');

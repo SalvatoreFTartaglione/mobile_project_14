@@ -5,10 +5,19 @@ import '../../screens/trip_detail_screen.dart';
 import '../../screens/destination_screen.dart';
 import '../../screens/search_screen.dart';
 import '../../screens/stats_screen.dart'; // Importa la schermata delle statistiche
+import '../../database/database_helper.dart';
 
 void main() {
   runApp(const MyApp());
 }
+
+/* void main() {
+  final database = DatabaseHelper.instance;
+  await database.database;
+  DatabaseHelper.instance.database.then((_) {
+    runApp(const MyApp());
+  });
+} */
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
