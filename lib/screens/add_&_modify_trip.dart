@@ -72,10 +72,6 @@ class _TripEditScreenState extends State<TripEditScreen> {
                         Text('Destinazione: ${widget.trip!.destination}'),
                         Text('Data: ${DateFormat('dd MMM yyyy').format(widget.trip!.date)}'),
                         // Altri dettagli del viaggio
-
-
-
-                        
                       ],
                     ),
                   ),
@@ -104,7 +100,8 @@ class _AddModifyTripScreenState extends State<AddModifyTripScreen> {
   late TextEditingController _destinationController;
   late TextEditingController _itineraryController;
   late TextEditingController _notesController;
-  DateTime? _date;
+  DateTime? _datestart;
+  DateTime? _dateend;
   File? _imageFile;
 
   @override
@@ -114,7 +111,7 @@ class _AddModifyTripScreenState extends State<AddModifyTripScreen> {
     _destinationController = TextEditingController(text: widget.trip?.destination ?? '');
     _itineraryController = TextEditingController(text: widget.trip?.itinerary ?? '');
     _notesController = TextEditingController(text: widget.trip?.notes ?? '');
-    _date = widget.trip?.date;
+    _datestart = widget.trip?.date;
   }
 
   @override
@@ -126,27 +123,45 @@ class _AddModifyTripScreenState extends State<AddModifyTripScreen> {
     super.dispose();
   }
 
-  Future<void> _pickDate() async {
+  Future<void> _pickStartDate() async {
     DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _date ?? DateTime.now(),
+      initialDate: _datestart ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
     if (picked != null) {
       setState(() {
-        _date = picked;
+        _datestart = picked;
       });
     }
   }
 
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path); // Converte XFile in File
-      });
+  Future<void> _pickEndDate() async {
+    if (_datestart == null) {
+      // Mostra un messaggio di errore se la data di inizio non è stata selezionata
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Per favore seleziona prima la data di inizio')),
+      );
+      return;
+    }
+
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _dateend ?? _datestart!,
+      firstDate: _datestart!,
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      if (picked.isAfter(_datestart!)) {
+        setState(() {
+          _dateend = picked;
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('La data di fine deve essere successiva alla data di inizio')),
+        );
+      }
     }
   }
 
@@ -160,7 +175,8 @@ class _AddModifyTripScreenState extends State<AddModifyTripScreen> {
       String notes = _notesController.text;
       print('Titolo: $title');
       print('Destinazione: $destination');
-      print('Data: ${_date != null ? DateFormat('dd MMM yyyy').format(_date!) : 'N/A'}');
+      print('Data inizio: ${_datestart != null ? DateFormat('dd MMM yyyy').format(_datestart!) : 'N/A'}');
+      print('Data fine: ${_dateend != null ? DateFormat('dd MMM yyyy').format(_dateend!) : 'N/A'}');
       print('Itinerario: $itinerary');
       print('Note: $notes');
       print('Immagine: ${_imageFile != null ? _imageFile!.path : 'N/A'}');
@@ -194,12 +210,26 @@ class _AddModifyTripScreenState extends State<AddModifyTripScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      _date != null ? DateFormat('dd MMM yyyy').format(_date!) : 'Nessuna data selezionata',
+                      _datestart != null ? DateFormat('dd MMM yyyy').format(_datestart!) : 'Nessuna data di inizio selezionata',
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: _pickDate,
-                    child: Text('Seleziona Data'),
+                    onPressed: _pickStartDate,
+                    child: Text('Seleziona Data Inizio'),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      _dateend != null ? DateFormat('dd MMM yyyy').format(_dateend!) : 'Nessuna data di fine selezionata',
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: _pickEndDate,
+                    child: Text('Seleziona Data Fine'),
                   ),
                 ],
               ),
@@ -238,6 +268,11 @@ class _AddModifyTripScreenState extends State<AddModifyTripScreen> {
                   ),
                 ],
               ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _saveForm,
+                child: Text('Salva'),
+              ),
             ],
           ),
         ),
@@ -267,7 +302,16 @@ class _AddModifyTripScreenState extends State<AddModifyTripScreen> {
       ),
     );
   }
-}
 
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path); // Converte XFile in File
+      });
+    }
+  }
+}
 
 
