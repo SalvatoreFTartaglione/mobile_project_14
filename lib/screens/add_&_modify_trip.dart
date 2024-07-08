@@ -2,6 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sqflite/sqlite_api.dart';
+import 'package:untitled/database/database_helper.dart';
+import 'package:untitled/database/viaggio.dart';
 import '../models/trip.dart'; // Assicurati che il percorso del modello sia corretto
 
 class TripEditScreen extends StatefulWidget {
@@ -124,46 +127,50 @@ class _AddModifyTripScreenState extends State<AddModifyTripScreen> {
   }
 
   Future<void> _pickStartDate() async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _datestart ?? DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null) {
+  DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: _datestart ?? DateTime.now(),
+    firstDate: DateTime(2000),
+    lastDate: DateTime(2101),
+  );
+  if (picked != null) {
+    if (_dateend != null && picked.isAfter(_dateend!)) {
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('La data di inizio non può essere dopo la data di fine.'),
+        ),
+      );
+    } else {
       setState(() {
         _datestart = picked;
       });
     }
   }
+}
 
-  Future<void> _pickEndDate() async {
-    if (_datestart == null) {
-      // Mostra un messaggio di errore se la data di inizio non è stata selezionata
+Future<void> _pickEndDate() async {
+  DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: _dateend ?? DateTime.now(),
+    firstDate: DateTime(2000),
+    lastDate: DateTime(2101),
+  );
+  if (picked != null) {
+    if (_datestart != null && picked.isBefore(_datestart!)) {
+      // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Per favore seleziona prima la data di inizio')),
+        SnackBar(
+          content: Text('La data di fine non può essere prima della data di inizio.'),
+        ),
       );
-      return;
-    }
-
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _dateend ?? _datestart!,
-      firstDate: _datestart!,
-      lastDate: DateTime(2101),
-    );
-    if (picked != null) {
-      if (picked.isAfter(_datestart!)) {
-        setState(() {
-          _dateend = picked;
-        });
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('La data di fine deve essere successiva alla data di inizio')),
-        );
-      }
+    } else {
+      setState(() {
+        _dateend = picked;
+      });
     }
   }
+}
 
   void _saveForm() {
     if (_formKey.currentState!.validate()) {
@@ -180,6 +187,9 @@ class _AddModifyTripScreenState extends State<AddModifyTripScreen> {
       print('Itinerario: $itinerary');
       print('Note: $notes');
       print('Immagine: ${_imageFile != null ? _imageFile!.path : 'N/A'}');
+      final db = DatabaseHelper.instance;
+      //viaggio v = viaggio(titolo: title);
+      //db.insertViaggio(v)
     }
   }
 
