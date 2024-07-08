@@ -66,13 +66,13 @@ class _HomeScreenState extends State<HomeScreen> {
             _selectedIndex = index;
           });
         },
-        children: const [
-          Dashboard(),
-          TripDetailScreen(),
-          TripEditScreen(),
-          DestinationScreen(),
-          SearchScreen(),
-          Statistiche(), // Aggiungi la schermata delle statistiche
+        children: [
+          const Dashboard(),
+          TripDetailScreen(destinazione: null), // Passa una stringa opzionale
+          const TripEditScreen(),
+          const DestinationScreen(),
+          const SearchScreen(),
+          const Statistiche(), // Aggiungi la schermata delle statistiche
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
