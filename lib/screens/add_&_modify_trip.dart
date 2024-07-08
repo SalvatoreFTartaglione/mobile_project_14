@@ -100,7 +100,7 @@ class AddModifyTripScreen extends StatefulWidget {
 class _AddModifyTripScreenState extends State<AddModifyTripScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _titleController;
-  late TextEditingController _destinationController;
+    late TextEditingController _destinationController;
   late TextEditingController _itineraryController;
   late TextEditingController _notesController;
   DateTime? _datestart;
@@ -108,23 +108,23 @@ class _AddModifyTripScreenState extends State<AddModifyTripScreen> {
   File? _imageFile;
 
   @override
-  void initState() {
-    super.initState();
-    _titleController = TextEditingController(text: widget.trip?.title ?? '');
-    _destinationController = TextEditingController(text: widget.trip?.destination ?? '');
-    _itineraryController = TextEditingController(text: widget.trip?.itinerary ?? '');
-    _notesController = TextEditingController(text: widget.trip?.notes ?? '');
+void initState() {
+  super.initState();
+  _titleController = TextEditingController(text: widget.trip?.title ?? '');
+  _destinationController = TextEditingController(text: widget.trip?.destination ?? '');
+  _itineraryController = TextEditingController(text: widget.trip?.itinerary ?? '');
+  _notesController = TextEditingController(text: widget.trip?.notes ?? '');
     _datestart = widget.trip?.date;
-  }
+}
 
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _destinationController.dispose();
-    _itineraryController.dispose();
-    _notesController.dispose();
+@override
+void dispose() {
+  _titleController.dispose();
+  _destinationController.dispose();
+  _itineraryController.dispose();
+  _notesController.dispose();
     super.dispose();
-  }
+}
 
   Future<void> _pickStartDate() async {
   DateTime? picked = await showDatePicker(
@@ -177,11 +177,11 @@ Future<void> _pickEndDate() async {
       _formKey.currentState!.save();
       // Logica per salvare o aggiornare il viaggio
       String title = _titleController.text;
-      String destination = _destinationController.text;
+            String destination = _destinationController.text;
       String itinerary = _itineraryController.text;
       String notes = _notesController.text;
       print('Titolo: $title');
-      print('Destinazione: $destination');
+            print('Destinazione: $destination');
       print('Data inizio: ${_datestart != null ? DateFormat('dd MMM yyyy').format(_datestart!) : 'N/A'}');
       print('Data fine: ${_dateend != null ? DateFormat('dd MMM yyyy').format(_dateend!) : 'N/A'}');
       print('Itinerario: $itinerary');
@@ -210,7 +210,7 @@ Future<void> _pickEndDate() async {
                 labelText: 'Titolo',
                 controller: _titleController,
               ),
-              SizedBox(height: 10),
+                            SizedBox(height: 10),
               _buildInputDecorator(
                 labelText: 'Destinazione',
                 controller: _destinationController,

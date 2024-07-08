@@ -5,7 +5,7 @@ class Trip {
   final DateTime date;
   final bool isCompleted;
   final String? title;
-  final String? itinerary;
+    final String? itinerary;
   final String? notes;
   final String tripType;
 
@@ -14,7 +14,7 @@ class Trip {
     required this.date,
     this.isCompleted = false,
     this.title,
-    this.itinerary,
+        this.itinerary,
     this.notes,
     required this.tripType,
   });

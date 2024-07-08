@@ -17,9 +17,6 @@ class Statistiche extends StatelessWidget {
     };
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Statistiche Viaggi'),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
