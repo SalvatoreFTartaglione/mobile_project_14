@@ -23,7 +23,8 @@ class _TripEditScreenState extends State<TripEditScreen> {
       appBar: AppBar(
         title: Text(widget.trip != null ? 'Modifica il tuo viaggio' : 'Aggiungi un nuovo viaggio'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
+        child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -82,6 +83,7 @@ class _TripEditScreenState extends State<TripEditScreen> {
               ),
           ],
         ),
+      ),
       ),
     );
   }
@@ -199,7 +201,8 @@ Future<void> _pickEndDate() async {
       appBar: AppBar(
         title: Text(widget.trip != null ? 'Modifica il tuo viaggio' : 'Aggiungi un nuovo viaggio'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
+        child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -286,7 +289,9 @@ Future<void> _pickEndDate() async {
             ],
           ),
         ),
-      ),
+      ), 
+      ) 
+      
     );
   }
 

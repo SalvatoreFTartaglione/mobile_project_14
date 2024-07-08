@@ -42,12 +42,12 @@ class _SearchScreenState extends State<SearchScreen> {
       final matchKeyword = _searchController.text.isEmpty ||
           trip.destination.toLowerCase().contains(_searchController.text.toLowerCase());
       final matchDestination = _selectedDestination.isEmpty ||
-          trip.destination == _selectedDestination;
+          trip.destination == _selectedDestination || _selectedDestination == '---';
       final matchDate = _selectedDate == null ||
           trip.date.isAtSameMomentAs(_selectedDate!) ||
           trip.date.isAfter(_selectedDate!);
       final matchTripType = _selectedTripType.isEmpty ||
-          trip.tripType == _selectedTripType;
+          trip.tripType == _selectedTripType || _selectedTripType == '---';
 
       return matchKeyword && matchDestination && matchDate && matchTripType;
     }).toList();
@@ -57,11 +57,28 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
+  void _clearFilters() {
+    setState(() {
+      _searchController.clear();
+      _selectedDestination = '';
+      _selectedDate = null;
+      _selectedTripType = '';
+      filteredTrips = trips;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Ricerca Viaggi'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.clear_all),
+            onPressed: _clearFilters,
+            tooltip: 'Pulisci tutti i filtri',
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -91,7 +108,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   _filterTrips();
                 });
               },
-              items: ['Roma', 'Parigi', 'New York']
+              items: ['Roma', 'Parigi', 'New York', '---']
                   .map<DropdownMenuItem<String>>((String destination) {
                 return DropdownMenuItem<String>(
                   value: destination,
@@ -100,32 +117,48 @@ class _SearchScreenState extends State<SearchScreen> {
               }).toList(),
             ),
             SizedBox(height: 20),
-            TextFormField(
-              readOnly: true,
-              onTap: () async {
-                DateTime? pickedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime(2100),
-                );
-                if (pickedDate != null) {
-                  setState(() {
-                    _selectedDate = pickedDate;
-                    _filterTrips();
-                  });
-                }
-              },
-              decoration: InputDecoration(
-                labelText: 'Filtra per data',
-                border: OutlineInputBorder(),
-                suffixIcon: Icon(Icons.calendar_today),
-              ),
-              controller: _selectedDate == null
-                  ? null
-                  : TextEditingController(
-                text: DateFormat('dd MMM yyyy').format(_selectedDate!),
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    readOnly: true,
+                    onTap: () async {
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2100),
+                      );
+                      if (pickedDate != null) {
+                        setState(() {
+                          _selectedDate = pickedDate;
+                          _filterTrips();
+                        });
+                      }
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Filtra per data',
+                      border: OutlineInputBorder(),
+                      suffixIcon: Icon(Icons.calendar_today),
+                    ),
+                    controller: _selectedDate == null
+                        ? null
+                        : TextEditingController(
+                            text: DateFormat('dd MMM yyyy').format(_selectedDate!),
+                          ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.clear),
+                  onPressed: () {
+                    setState(() {
+                      _selectedDate = null;
+                      _filterTrips();
+                    });
+                  },
+                  tooltip: 'Pulisci filtro data',
+                ),
+              ],
             ),
             SizedBox(height: 20),
             DropdownButtonFormField<String>(
@@ -137,7 +170,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   _filterTrips();
                 });
               },
-              items: ['Avventura', 'Relax', 'Culturale']
+              items: ['Avventura', 'Relax', 'Culturale', '---']
                   .map<DropdownMenuItem<String>>((String tripType) {
                 return DropdownMenuItem<String>(
                   value: tripType,
