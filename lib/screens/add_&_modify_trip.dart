@@ -23,8 +23,7 @@ class _TripEditScreenState extends State<TripEditScreen> {
       appBar: AppBar(
         title: Text(widget.trip != null ? 'Modifica il tuo viaggio' : 'Aggiungi un nuovo viaggio'),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -84,7 +83,6 @@ class _TripEditScreenState extends State<TripEditScreen> {
           ],
         ),
       ),
-      ),
     );
   }
 }
@@ -102,7 +100,8 @@ class AddModifyTripScreen extends StatefulWidget {
 class _AddModifyTripScreenState extends State<AddModifyTripScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _titleController;
-    late TextEditingController _destinationController;
+  late TextEditingController _categoryController;
+  late TextEditingController _destinationController;
   late TextEditingController _itineraryController;
   late TextEditingController _notesController;
   DateTime? _datestart;
@@ -116,7 +115,8 @@ void initState() {
   _destinationController = TextEditingController(text: widget.trip?.destination ?? '');
   _itineraryController = TextEditingController(text: widget.trip?.itinerary ?? '');
   _notesController = TextEditingController(text: widget.trip?.notes ?? '');
-    _datestart = widget.trip?.date;
+  _categoryController = TextEditingController(text: widget.trip?.category ?? ''); // Initialize here
+  _datestart = widget.trip?.date;
 }
 
 @override
@@ -125,8 +125,10 @@ void dispose() {
   _destinationController.dispose();
   _itineraryController.dispose();
   _notesController.dispose();
-    super.dispose();
+  _categoryController.dispose(); // Dispose here
+  super.dispose();
 }
+
 
   Future<void> _pickStartDate() async {
   DateTime? picked = await showDatePicker(
@@ -174,26 +176,46 @@ Future<void> _pickEndDate() async {
   }
 }
 
-  void _saveForm() {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      // Logica per salvare o aggiornare il viaggio
-      String title = _titleController.text;
-            String destination = _destinationController.text;
-      String itinerary = _itineraryController.text;
-      String notes = _notesController.text;
-      print('Titolo: $title');
-            print('Destinazione: $destination');
-      print('Data inizio: ${_datestart != null ? DateFormat('dd MMM yyyy').format(_datestart!) : 'N/A'}');
-      print('Data fine: ${_dateend != null ? DateFormat('dd MMM yyyy').format(_dateend!) : 'N/A'}');
-      print('Itinerario: $itinerary');
-      print('Note: $notes');
-      print('Immagine: ${_imageFile != null ? _imageFile!.path : 'N/A'}');
-      final db = DatabaseHelper.instance;
-      //viaggio v = viaggio(titolo: title);
-      //db.insertViaggio(v)
+    void _saveForm() async {
+  if (_formKey.currentState!.validate()) {
+    _formKey.currentState!.save();
+    // Logica per salvare o aggiornare il viaggio
+    String title = _titleController.text;
+    DateTime datainizio = _datestart!;
+    DateTime datafine = _dateend!;
+    String destination = _destinationController.text;
+    String itinerary = _itineraryController.text;
+    String notes = _notesController.text;
+    String category = _categoryController.text;
+
+    print('Titolo: $title');
+    print('Destinazione: $destination');
+    print('Data inizio: ${DateFormat('dd MMM yyyy').format(datainizio)}');
+    print('Data fine: ${DateFormat('dd MMM yyyy').format(datafine)}');
+    print('Itinerario: $itinerary');
+    print('Note: $notes');
+    print('Categoria: $category');
+    print('Immagine: ${_imageFile != null ? _imageFile!.path : 'N/A'}');
+
+    final db = DatabaseHelper.instance;
+    viaggio v = viaggio(
+      titolo: title,
+      data_inizio: datainizio,
+      data_fine: datafine,
+      note: notes,
+      itinerario: itinerary,
+      destinazione: destination,
+      categoria: category,
+    );
+
+    try {
+      await db.insertViaggio(v);
+      print('Viaggio salvato con successo');
+    } catch (e) {
+      print('Errore durante il salvataggio del viaggio: $e');
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -213,7 +235,12 @@ Future<void> _pickEndDate() async {
                 labelText: 'Titolo',
                 controller: _titleController,
               ),
-                            SizedBox(height: 10),
+              SizedBox(height: 10),
+              _buildInputDecorator(
+              labelText: 'Categoria', // Add this for category
+              controller: _categoryController, // Use the category controller
+              ),
+              SizedBox(height: 10),
               _buildInputDecorator(
                 labelText: 'Destinazione',
                 controller: _destinationController,
@@ -289,8 +316,8 @@ Future<void> _pickEndDate() async {
             ],
           ),
         ),
-      ), 
-      ) 
+      ),
+        )
       
     );
   }
@@ -328,5 +355,3 @@ Future<void> _pickEndDate() async {
     }
   }
 }
-
-
