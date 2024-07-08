@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
-import '../models/trip.dart';
+import '../models/trip.dart'; // Assicurati che il percorso del modello sia corretto
 
 class TripEditScreen extends StatefulWidget {
   const TripEditScreen({super.key, this.trip});
@@ -13,7 +13,92 @@ class TripEditScreen extends StatefulWidget {
   _TripEditScreenState createState() => _TripEditScreenState();
 }
 
-class _TripEditScreenState extends State<TripEditScreen> { 
+class _TripEditScreenState extends State<TripEditScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.trip != null ? 'Modifica il tuo viaggio' : 'Aggiungi un nuovo viaggio'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddModifyTripScreen(trip: widget.trip),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor:  Color(0xFF4C8CFF),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              ),
+              child: 
+              Text(
+                  'Nuovo Viaggio',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 24, 23, 23), // colore del testo
+                    fontSize: 15.0, // dimensione del font
+                    fontWeight: FontWeight.bold, // spessore del font
+                  ),
+                )
+            ),
+
+            //MODIFICA VIAGGIO
+            if (widget.trip != null) // Se c'è un trip, visualizza i dettagli del viaggio
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 10),
+                  Text('Modifica Viaggio', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 10),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Dettagli del viaggio:'),
+                        SizedBox(height: 5),
+                        Text('Titolo: ${widget.trip!.title}'),
+                        Text('Destinazione: ${widget.trip!.destination}'),
+                        Text('Data: ${DateFormat('dd MMM yyyy').format(widget.trip!.date)}'),
+                        // Altri dettagli del viaggio
+
+
+
+                        
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Widget per la schermata di aggiunta/modifica del viaggio
+class AddModifyTripScreen extends StatefulWidget {
+  final Trip? trip;
+
+  const AddModifyTripScreen({Key? key, this.trip}) : super(key: key);
+
+  @override
+  _AddModifyTripScreenState createState() => _AddModifyTripScreenState();
+}
+
+class _AddModifyTripScreenState extends State<AddModifyTripScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _titleController;
   late TextEditingController _destinationController;
@@ -47,7 +132,7 @@ class _TripEditScreenState extends State<TripEditScreen> {
       initialDate: _date ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
-  );
+    );
     if (picked != null) {
       setState(() {
         _date = picked;
@@ -87,46 +172,24 @@ class _TripEditScreenState extends State<TripEditScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.trip != null ? 'Modifica il tuo viaggio' : 'Aggiungi un nuovo viaggio'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: _saveForm,
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: ListView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TextFormField(
+              _buildInputDecorator(
+                labelText: 'Titolo',
                 controller: _titleController,
-                decoration: InputDecoration(labelText: 'Titolo'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Per favore, inserisci un titolo';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  // Non serve fare nulla qui, il salvataggio è già gestito
-                },
               ),
-              TextFormField(
+              SizedBox(height: 10),
+              _buildInputDecorator(
+                labelText: 'Destinazione',
                 controller: _destinationController,
-                decoration: InputDecoration(labelText: 'Destinazione'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Per favore, inserisci una destinazione';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  // Non serve fare nulla qui, il salvataggio è già gestito
-                },
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               Row(
                 children: [
                   Expanded(
@@ -140,39 +203,35 @@ class _TripEditScreenState extends State<TripEditScreen> {
                   ),
                 ],
               ),
-              TextFormField(
+              SizedBox(height: 10),
+              _buildInputDecorator(
+                labelText: 'Itinerario',
                 controller: _itineraryController,
-                decoration: InputDecoration(labelText: 'Itinerario'),
                 maxLines: 3,
-                onSaved: (value) {
-                  // Non serve fare nulla qui, il salvataggio è già gestito
-                },
               ),
-              TextFormField(
+              SizedBox(height: 10),
+              _buildInputDecorator(
+                labelText: 'Note',
                 controller: _notesController,
-                decoration: InputDecoration(labelText: 'Note'),
                 maxLines: 3,
-                onSaved: (value) {
-                  // Non serve fare nulla qui, il salvataggio è già gestito
-                },
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               Row(
                 children: [
                   _imageFile != null
                       ? Image.file(
-                    _imageFile!,
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.cover,
-                  )
+                          _imageFile!,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        )
                       : Container(
-                    width: 100,
-                    height: 100,
-                    color: Colors.grey[300],
-                    child: Icon(Icons.image, size: 50, color: Colors.grey[600]),
-                  ),
-                  SizedBox(width: 20),
+                          width: 100,
+                          height: 100,
+                          color: Colors.grey[300],
+                          child: Icon(Icons.image, size: 50, color: Colors.grey[600]),
+                        ),
+                  SizedBox(width: 10),
                   ElevatedButton(
                     onPressed: _pickImage,
                     child: Text('Seleziona Immagine'),
@@ -185,4 +244,30 @@ class _TripEditScreenState extends State<TripEditScreen> {
       ),
     );
   }
+
+  Widget _buildInputDecorator({
+    required String labelText,
+    required TextEditingController controller,
+    int maxLines = 1,
+  }) {
+    return InputDecorator(
+      decoration: InputDecoration(
+        labelText: labelText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      ),
+      child: TextFormField(
+        controller: controller,
+        maxLines: maxLines,
+        decoration: InputDecoration.collapsed(
+          hintText: '',
+        ),
+      ),
+    );
+  }
 }
+
+
+

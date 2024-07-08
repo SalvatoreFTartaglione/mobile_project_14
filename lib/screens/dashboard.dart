@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 // import 'package:prova/aggiungiviaggio.dart';
+import 'package:untitled/screens/add_&_modify_trip.dart';
 
 
 class Dashboard extends StatelessWidget {
@@ -18,53 +19,58 @@ class Dashboard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           SizedBox(
-            height: 250, // Altezza delle card
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 1, // Numero di viaggi pianificati
-              itemBuilder: (context, index) {
-                return Container(
-                  width: 340, // Larghezza delle card
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Card(
-                    color: const Color(0xFF4C8CFF),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+            height: 250, // Altezza delle card+
+            child: Align(
+              alignment: Alignment.center,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 1, // Numero di viaggi pianificati
+                itemBuilder: (context, index) {
+                  return Container(
+                    width: 350, // Larghezza delle card
+                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Card(
+                      color: const Color(0xFF4C8CFF),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
+                            ),
+                            child: Image.asset(
+                              'assets/images/newYork.jpg',
+                              height: 150,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(
+                              child: Text(
+                                '${index + 1}° VIAGGIO',
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                            child: Text(
+                              'Dettagli del viaggio ${index + 1}',
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10),
-                          ),
-                          child: Image.asset(
-                            'assets/images/newYork.jpg',
-                            height: 150,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'Viaggio ${index + 1}',
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                          child: Text(
-                            'Dettagli del viaggio ${index + 1}',
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -97,20 +103,49 @@ class Dashboard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Row(
-            /* mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TripEditScreen(trip: null), // Passa null se è un nuovo viaggio
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TripEditScreen(trip: null), // Passa null se è un nuovo viaggio
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: 45.0,
+                      height: 45.0,
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 247, 22, 22),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.mode_of_travel_sharp,   //oppure Icons.travel_explore, 
+                          color: Colors.white,
+                          size: 36.0,                   // Dimensione button
+                        ),
+                      ),
                     ),
-                  );
-                },
-                child: const Text('Aggiungi Viaggio'),
+                  ),
+                  const SizedBox(height: 8.0), // Spazio tra il bottone e il testo
+                  const Text(
+                    'NUOVO VIAGGIO',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 11.0,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.0,
+                    ),
+                  ),
+                ],
               ),
-            ], */
+            ],
           ),
         ],
       ),
