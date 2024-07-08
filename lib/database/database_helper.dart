@@ -57,7 +57,7 @@ class DatabaseHelper {
       CREATE TABLE recensione(
         id_recensione SERIAL PRIMARY KEY, 
         testo TEXT NOT NULL, 
-        viaggio INTEGER NOT NULL, 
+        viaggio INTEGER, 
         FOREIGN KEY(viaggio) REFERENCES viaggio(id_viaggio)
       );
     ''');
