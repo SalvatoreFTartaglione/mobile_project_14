@@ -61,7 +61,7 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
                 trailing: IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () async {
-                    await DatabaseHelper.instance.deleteViaggio(viaggio.id_viaggio);
+                    //await DatabaseHelper.instance.deleteViaggio(viaggio.id_viaggio);
                     _refreshViaggi();
                   },
                 ),

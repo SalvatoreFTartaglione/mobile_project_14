@@ -33,6 +33,7 @@ class DatabaseHelper {
         data_fine DATE NOT NULL, 
         destinazione INTEGER NOT NULL,
         note TEXT NOT NULL,
+        categoria TEXT NOT NULL,
         FOREIGN KEY(destinazione) REFERENCES destinazione(id_destinazione)
       );
     ''');
@@ -89,6 +90,11 @@ class DatabaseHelper {
       viaggio.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+
+    List <Map<String, dynamic>> results = await db.query(
+      'viaggio'
+    );
+    print(results);
   }
 
   Future<void> insertFoto(foto foto) async {
@@ -183,13 +189,14 @@ class DatabaseHelper {
 
     return List.generate(maps.length, (i) {
       return viaggio(
-        id_viaggio: maps[i]['id_viaggio'] as int,
+        //id_viaggio: maps[i]['id_viaggio'] as int,
         titolo: maps[i]['titolo'] as String,
         data_inizio: DateTime.parse(maps[i]['data_inizio'] as String),
         data_fine: DateTime.parse(maps[i]['data_fine'] as String),
         note: maps[i]['note'] as String,
         itinerario: maps[i]['itinerario'] as String,
-        destinazione: maps[i]['destinazione'] as int,
+        destinazione: maps[i]['destinazione'] as String,
+        categoria: maps[i]['categoria'] as String,
       );
     });
   }
